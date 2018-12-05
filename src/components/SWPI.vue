@@ -5,13 +5,13 @@
         <div class="container-fluid">
             <div class="navbar-header">
                 <div class="navbar-brand" href="#">
-                    <a href="#">No Have Tweet</a>
+                    <a href="javascript:void(0);">No Have Tweet</a>
                 </div>
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><router-link  to="/login" target="_Self">Login</router-link></li>
-                    <li><router-link  to="/register" target="_Self">Register</router-link></li>
+                    <li><a v-on:click="loginOrMod" href="javascript:void(0);">{{username}}</a></li>
+                    <li><a v-on:click="registerOrOut" href="javascript:void(0);">{{status}}</a></li>
                 </ul>
             </div>
         </div>
@@ -103,9 +103,63 @@
 	export default {
 		data() {
 			return {
-				
+				 username:"",
+				 isLogin:false,
+				 status: ""
 			};
-		}
+		},
+		created: function () { 
+			//console.log("调用钩子"); 
+			this.getEventData();
+		},
+		methods: {
+			getEventData:function() {
+				let routerParams = this.$route.params.username;
+				console.log("routerParams"+routerParams); 
+				if(routerParams == null)
+				{
+					console.log("null");
+					this.username = "Login";
+					this.status = "Register";
+					this.isLogin = false;
+				}
+				else
+				{
+					this.username = routerParams;
+					this.isLogin = true;
+					this.status = "Logout";
+				}
+
+			},
+			loginOrMod: function () {
+						if(this.isLogin){							
+							this.$router.push({
+									path: '/modification', 
+									name: 'modification',
+									params: { 
+											username: this.username
+									}
+							});
+						}
+						else{
+							this.$router.push({
+									path: '/login'
+							});
+						}
+			},
+			registerOrOut: function () {
+						if(this.isLogin){							
+							this.isLogin = false;
+							this.username = "Login";
+							this.status = "Register";
+						}
+						else{
+							this.$router.push({
+									path: '/register'
+							});
+						}
+			},
+		},
 	}
 </script>
 

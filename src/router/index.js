@@ -9,26 +9,26 @@ Vue.use(Router)
 
 export default new Router({
 	mode: 'history',
-  routes: [
-    {
-      path: '/',
-      name: 'SWPI',
-      component: SWPI
-    },
-		{
-			path: '/register',
-			name: 'register',
-			component: register
-		},
-		{
-			path: '/login',
-			name: 'login',
-			component: login
-		},
-		{
-			path: '/modification',
-			name: 'modification',
-			component: modification
-		}
-  ]
+	routes: [
+	{
+	  path: '/',
+	  name: 'SWPI',
+	  component: SWPI
+	},
+	{
+		path: '/register',
+		name: 'register',
+		component: register
+	},
+	{
+		path: '/login',
+		name: 'login',
+		component: login
+	},
+	{
+		path: '/modification',
+		name: 'modification',
+		component: modification
+	}
+	]
 })

@@ -7,10 +7,10 @@
         <p id="title">User Login</p>
         <form action="" method="post" onsubmit="return check()">
             <div class="input">
-                <p style="padding-left: 10px;">Username : <input type="text" name="user" id="_user"></p><span id="_usererr">用户名不存在</span>
-                <p>Password : <input type="text" name="password" id="_id"></p><span id="_iderr">密码错误</span><br>
-                <input type="reset" value="Reset" id="_reset">
-                <input type="submit" value="Login">
+                <p style="padding-left: 10px;">Username : <input v-model="username" type="text" name="user" id="_user"></p><span id="_usererr">用户名不存在</span>
+                <p>Password : <input v-model="password" type="password" name="password" id="_id"></p><span id="_iderr">密码错误</span><br>
+                <input v-on:click="reset" type="button" value="Reset" id="_reset">
+                <input v-on:click="submit" type="button" value="Login">
             </div>
         </form>
     </div>
@@ -21,9 +21,34 @@
 	export default {
 		data() {
 			return {
-				
+				username:"",
+				password:""
 			};
-		}
+		},
+		created: function () { 
+			//console.log("调用钩子"); 
+			this.getEventData();
+		},
+		methods: {
+			getEventData:function() {
+				let routerParams = this.$route.params.username;
+				//console.log("routerParams"+routerParams); 
+				this.username = routerParams
+			},
+			submit: function () {
+						this.$router.push({
+								path: '/', 
+								name: 'SWPI',
+								params: { 
+										username: this.username
+								},
+						})
+					},
+			reset: function () {
+				this.$data.username = "";
+				this.$data.password = "";
+			}
+		},
 	}
 </script>
 

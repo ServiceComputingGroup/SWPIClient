@@ -5,25 +5,78 @@
 	</div>
 	<div id="login">
 		<p id="title">Modify Information</p>
-		<form action="" method="post" onsubmit="return check()">
-			<div class="input">
-				<p style="padding-left: 10px;">Phone : <input type="text" name="user" id="_user"></p><span id="_usererr">电话不符合格式</span>
-				<p>Email : <input type="text" name="password" id="_id"></p><span id="_iderr">邮箱不符合格式</span><br>
-				<input type="reset" value="Reset" id="_reset">
-				<input type="submit" value="Submit">
-			</div>
-		</form>
+        <form action="">
+            <div class="input">
+                <p style="padding-left: 10px;">Username : <input v-model="username" disabled="disabled" type="text" name="user" id="_user"></p><label v-remind="username"></label>
+                <p>Password : <input v-model="password" v-verify="password" type="password" name="password" id="_id"></p><label v-remind="password"></label>
+                <p style="padding-left: 20px;">Phone : <input v-model="phone" v-verify="phone" type="text" name="phone" id="_phone"></p><label v-remind="phone"></label>
+                <p style="padding-left: 25px;">Email : <input v-model="email" v-verify="email" type="text" name="email" id="_email"></p><label v-remind="email"></label><br>
+                <input v-on:click="cancel" type="button" value="Cancel" id="_reset">
+                <input v-on:click="submit" type="button" value="Submit">
+            </div>
+        </form>
 	</div>
 </body>
 </template>
 
 <script>
+	import Vue from "vue";
+		import verify from "vue-verify-plugin";
+		Vue.use(verify,{
+				blur:true
+		});
 	export default {
 		data() {
 			return {
-				
+				username:"",
+				password:"",
+				phone:"",
+				email:""
 			};
+		},
+		created: function () { 
+			//console.log("调用钩子"); 
+			this.getEventData();
+		},
+		verify: {
+			phone:["required","mobile"],
+			email:["required","email"],
+			password: [
+				"required",
+				{
+					minLength:6,
+					message: "密码不得小于6位"
+				}]
+		},
+		methods:{
+			submit: function () {
+						if(this.$verify.check())
+						{
+							this.$router.push({
+									path: '/', 
+									name: 'SWPI',
+									params: { 
+											username: this.username
+									},
+							})
+						}
+					},
+			cancel: function () {
+				this.$router.push({
+						path: '/', 
+						name: 'SWPI',
+						params: { 
+								username: this.username
+						},
+				})
+			},
+			getEventData:function() {
+				let routerParams = this.$route.params.username;
+				//console.log("routerParams"+routerParams); 
+				this.username = routerParams
+			},
 		}
+		
 	}
 </script>
 
@@ -82,7 +135,7 @@ div>input {
 #login{
     margin: 0 auto;
     width: 300px;
-    height: 200px;
+    height: 300px;
     border: 5px solid #3A3F44;
     border-radius: 10px;
     background-color:#383D42;
@@ -95,5 +148,8 @@ p input {
 }
 .input{
     color: #B5B5B6;
+}
+.input>p{
+	padding-bottom: 10px;
 }
 </style>

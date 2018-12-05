@@ -5,14 +5,14 @@
     </div>
     <div id="main">
         <p id="title">User Register</p>
-        <form action="" method="post" onsubmit="return check()">
+        <form action="">
             <div class="input">
-                <p style="padding-left: 10px;">Username : <input type="text" name="user" id="_user"></p><span id="_usererr">用户名6~18位英文字母、数字或下划线,必须以英文字母开头</span>
-                <p>Password : <input type="text" name="password" id="_id"></p><span id="_iderr">密码小于6位</span>
-                <p style="padding-left: 20px;">Phone : <input type="text" name="phone" id="_phone"></p><span id="_phoneerr">电话11位数字,不能以0开头</span>
-                <p style="padding-left: 25px;">Email : <input type="text" name="email" id="_email"></p><span id="_emailerr">邮箱格式不正确,必须以数字或英文字母开头</span><br>
-                <input type="reset" value="Reset" id="_reset">
-                <input type="submit" value="Submit">
+                <p style="padding-left: 10px;">Username : <input v-model="username" v-verify="username" type="text" name="user" id="_user"></p><label v-remind="username"></label>
+                <p>Password : <input v-model="password" v-verify="password" type="password" name="password" id="_id"></p><label v-remind="password"></label>
+                <p style="padding-left: 20px;">Phone : <input v-model="phone" v-verify="phone" type="text" name="phone" id="_phone"></p><label v-remind="phone"></label>
+                <p style="padding-left: 25px;">Email : <input v-model="email" v-verify="email" type="text" name="email" id="_email"></p><label v-remind="email"></label><br>
+                <input v-on:click="reset" type="button" value="Reset" id="_reset">
+                <input v-on:click="submit" type="button" value="Submit">
             </div>
         </form>
     </div>
@@ -20,12 +20,67 @@
 </template>
 
 <script>
+	import Vue from "vue";
+    import verify from "vue-verify-plugin";
+    Vue.use(verify,{
+        blur:true
+    });
 	export default {
 		data() {
 			return {
-				
+				username:"",
+				phone: "",
+				email: "",
+				password:""
 			};
-		}
+		},
+		verify: {
+				username:[
+				"required",
+				{
+					minLength:4,
+					message: "用户名不得小于4位"
+				},
+				{
+					maxLength:10,
+					message: "用户名不得大于10位"
+				}
+			],
+			phone:["required","mobile"],
+			email:["required","email"],
+			password: [
+				"required",
+				{
+					minLength:6,
+					message: "密码不得小于6位"
+				}]
+    },
+		methods:{
+			submit: function () {
+						if(this.$verify.check())
+						{
+							//访问后端看用户名是否注册
+							//如果注册了则提醒已注册
+							//没有就跳转
+							//传参username到Login
+							 //eventBus.$emit('fromRegister',this.$data.username);
+							 
+							this.$router.push({
+									path: '/login', 
+									name: 'login',
+									params: { 
+											username: this.username
+									},
+							})
+						}
+					},
+			reset: function () {
+				this.$data.username = "";
+				this.$data.phone = "";
+				this.$data.email = "";
+				this.$data.password = "";
+			}
+	 }
 	}
 </script>
 
@@ -97,5 +152,8 @@ p input {
 }
 .input{
     color: #B5B5B6;
+}
+.input>p{
+	padding-bottom: 10px;
 }
 </style>
