@@ -20,11 +20,9 @@
 </template>
 
 <script>
-	import Vue from "vue";
-		import verify from "vue-verify-plugin";
-		Vue.use(verify,{
-				blur:true
-		});
+	
+	import { JUDGESTATE_QUERY } from '../js/graphql.js';
+	import { MODIFYUSER_MUTATION } from '../js/graphql.js';
 	export default {
 		data() {
 			return {
@@ -52,13 +50,36 @@
 			submit: function () {
 						if(this.$verify.check())
 						{
-							this.$router.push({
-									path: '/', 
-									name: 'SWPI',
-									params: { 
-											username: this.username
-									},
-							})
+							this.$apollo.mutate({
+								 mutation: MODIFYUSER_MUTATION,
+								 variables: {
+										username: this.$data.username,
+										phone: this.$data.phone,
+										email: this.$data.email,
+										password: this.$data.password,
+								 }
+							 })
+							 .then(response => {
+
+									if(response.data.modifyuser)
+									{
+										alert("修改信息成功");
+										this.$router.push({
+												path: '/', 
+												name: 'SWPI',
+												params: { 
+														username: this.username
+												},
+										});
+									}
+									else
+									{
+										alert("修改信息失败");
+									}
+							 })
+							 .catch(error => {
+									console.log(error);
+							 });
 						}
 					},
 			cancel: function () {
@@ -73,7 +94,39 @@
 			getEventData:function() {
 				let routerParams = this.$route.params.username;
 				//console.log("routerParams"+routerParams); 
-				this.username = routerParams
+				this.username = routerParams;
+				if(window.localStorage.getItem('token') && window.localStorage.getItem('token') != ""){
+					this.username = window.localStorage.getItem('name');
+					this.$apollo.query({
+						query: JUDGESTATE_QUERY,
+						variables: {
+								token: window.localStorage.getItem('token')
+						}
+					})
+					.then(response => {
+						if(response.data.judgestate == "Token Invalid.")
+						{
+							alert("离开页面已经超过时间,重新登录获取更多权限");
+							this.$router.push({
+									path: '/login', 
+									name: 'login',
+							})
+						}
+						else
+						{
+							this.username = window.localStorage.getItem('name');
+						}
+					})
+					.catch(error => {
+							console.log(error);
+					});
+				}else{
+					alert("未登录,请先登录");
+					this.$router.push({
+							path: '/login', 
+							name: 'login',
+					})
+				}
 			},
 		}
 		

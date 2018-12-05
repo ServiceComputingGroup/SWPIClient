@@ -47,47 +47,16 @@
                 </h1>
                 <div class="input-group">
                     <span class="input-group-addon">https://swapi.co/api/</span>
-                    <input id="interactive" type="text" class="form-control" placeholder="people/1/">
-                    <span class="input-group-btn"><button onClick="return false;" class="btn btn-primary">request</button></span>
+                    <input v-model="url" id="interactive" type="text" class="form-control" placeholder="people/1/">
+                    <span class="input-group-btn"><button v-on:click="request" class="btn btn-primary">request</button></span>
                 </div>
 
-                <small>Need a hint? try <a href="#" onClick="return false;"><i>people/1/</i></a> or <a href="#" onClick="return false;"><i>planets/3/</i></a> or <a href="#" onClick="return false;"><i>starships/9/</i></a></small>
+                <small>Need a hint? try <a v-on:click="people" href="javascript:void(0);"><i>people/1/</i></a> or <a v-on:click="planets" href="javascript:void(0);"><i>planets/3/</i></a> or <a v-on:click="starships" href="javascript:void(0);"><i>starships/9/</i></a></small>
 
                 <p class="lead pad_top">Result:</p>
                 <div class="well">
                       <pre id="interactive_output" class="pre-scrollable">
-{
-    "name": "Luke Skywalker",
-    "height": "172",
-    "mass": "77",
-    "hair_color": "blond",
-    "skin_color": "fair",
-    "eye_color": "blue",
-    "birth_year": "19BBY",
-    "gender": "male",
-    "homeworld": "https://swapi.co/api/planets/1/",
-    "films": [
-        "https://swapi.co/api/films/2/",
-        "https://swapi.co/api/films/6/",
-        "https://swapi.co/api/films/3/",
-        "https://swapi.co/api/films/1/",
-        "https://swapi.co/api/films/7/"
-    ],
-    "species": [
-        "https://swapi.co/api/species/1/"
-    ],
-    "vehicles": [
-        "https://swapi.co/api/vehicles/14/",
-        "https://swapi.co/api/vehicles/30/"
-    ],
-    "starships": [
-        "https://swapi.co/api/starships/12/",
-        "https://swapi.co/api/starships/22/"
-    ],
-    "created": "2014-12-09T13:50:51.644000Z",
-    "edited": "2014-12-20T21:17:56.891000Z",
-    "url": "https://swapi.co/api/people/1/"
-}
+{{text}}
                       </pre>
                 </div>
             </div>
@@ -100,12 +69,17 @@
 </template>
 
 <script>
+	import { LOGOUT_MUTATION } from '../js/graphql.js';
+	import { JUDGESTATE_QUERY } from '../js/graphql.js';
+	import { QUERY_QUERY } from '../js/graphql.js';
 	export default {
 		data() {
 			return {
 				 username:"",
 				 isLogin:false,
-				 status: ""
+				 status: "",
+				 text:"",
+				 url:""
 			};
 		},
 		created: function () { 
@@ -114,14 +88,39 @@
 		},
 		methods: {
 			getEventData:function() {
+				var json = require('../data.json');
+				this.$data.text = json;
 				let routerParams = this.$route.params.username;
-				console.log("routerParams"+routerParams); 
+				//console.log("routerParams"+routerParams); 
 				if(routerParams == null)
 				{
-					console.log("null");
+					//console.log("null");
 					this.username = "Login";
 					this.status = "Register";
 					this.isLogin = false;
+					if(window.localStorage.getItem('token') && window.localStorage.getItem('token')!= ""){
+						this.$apollo.query({
+							query: JUDGESTATE_QUERY,
+							variables: {
+									token: window.localStorage.getItem('token')
+							}
+						})
+						.then(response => {
+							if(response.data.judgestate == "Token Invalid.")
+							{
+								alert("离开页面已经超过时间,重新登录获取更多权限");
+							}
+							else
+							{
+								this.username = window.localStorage.getItem('name');
+								this.status = "Logout";
+								this.isLogin = true;
+							}
+						})
+						.catch(error => {
+								console.log(error);
+						});
+					}
 				}
 				else
 				{
@@ -152,6 +151,23 @@
 							this.isLogin = false;
 							this.username = "Login";
 							this.status = "Register";
+							window.localStorage.setItem('token', "");
+							window.localStorage.setItem('name', "");
+							
+							this.$apollo.mutate({
+								mutation: LOGOUT_MUTATION,
+								variables: {
+										username: this.$data.username
+								}
+							})
+							.then(response => {
+								alert("登出成功，期待下次见面");
+								var json = require('../data.json');
+								this.$data.text = json;
+							})
+							.catch(error => {
+									console.log(error);
+							});
 						}
 						else{
 							this.$router.push({
@@ -159,6 +175,95 @@
 							});
 						}
 			},
+			request:function(){
+				var tempstr = this.url;
+				var strs = tempstr.split("/");
+				console.log(strs);
+				var lpage = "";
+				var ltype = "";
+				var lindex = "";
+				if(strs.length>=2){
+					ltype = strs[0];
+					if(strs[1].indexOf("?page") != -1){
+						var t = strs[1].split("=");
+						lpage = t[1];
+					}else{
+						lindex = strs[1];
+					}
+				}else if(strs.length == 1){
+					ltype = strs[0];
+				}
+				console.log("type :"+ltype);
+				console.log("page :"+lpage);
+				console.log("index :"+lindex);
+				this.$apollo.query({
+					query: QUERY_QUERY,
+					variables: {
+							token: window.localStorage.getItem('token'),
+							type: ltype,
+							index: lindex,
+							page: lpage,
+					}
+				})
+				.then(response => {
+					this.$data.text = response.data.query;
+				})
+				.catch(error => {
+						console.log(error);
+				});
+
+			},
+			people:function(){
+				this.url = "people/1/";
+				this.$apollo.query({
+					query: QUERY_QUERY,
+					variables: {
+							token: window.localStorage.getItem('token'),
+							type: "people",
+							index: "1"
+					}
+				})
+				.then(response => {
+					this.$data.text = response.data.query;
+				})
+				.catch(error => {
+						console.log(error);
+				});
+			},
+			planets:function(){
+				this.url = "planets/3/";
+				this.$apollo.query({
+					query: QUERY_QUERY,
+					variables: {
+							token: window.localStorage.getItem('token'),
+							type: "planets",
+							index: "3"
+					}
+				})
+				.then(response => {
+					this.$data.text = response.data.query;
+				})
+				.catch(error => {
+						console.log(error);
+				});
+			},
+			starships:function(){
+				this.url = "starships/9/";
+				this.$apollo.query({
+					query: QUERY_QUERY,
+					variables: {
+							token: window.localStorage.getItem('token'),
+							type: "starships",
+							index: "9"
+					}
+				})
+				.then(response => {
+					this.$data.text = response.data.query;
+				})
+				.catch(error => {
+						console.log(error);
+				});
+			}
 		},
 	}
 </script>

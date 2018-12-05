@@ -21,7 +21,9 @@
 
 <script>
 	import Vue from "vue";
-    import verify from "vue-verify-plugin";
+	import verify from "vue-verify-plugin";
+	import { REGISTER_MUTATION } from '../js/graphql.js';
+	
     Vue.use(verify,{
         blur:true
     });
@@ -59,19 +61,37 @@
 			submit: function () {
 						if(this.$verify.check())
 						{
-							//访问后端看用户名是否注册
-							//如果注册了则提醒已注册
-							//没有就跳转
-							//传参username到Login
-							 //eventBus.$emit('fromRegister',this.$data.username);
-							 
-							this.$router.push({
-									path: '/login', 
-									name: 'login',
-									params: { 
-											username: this.username
-									},
-							})
+							this.$apollo.mutate({
+								 mutation: REGISTER_MUTATION,
+								 variables: {
+										username: this.$data.username,
+										phone: this.$data.phone,
+										email: this.$data.email,
+										password: this.$data.password,
+								 }
+							 })
+							 .then(response => {
+									console.log(response.data.register);
+									if(response.data.register == "")
+									{
+										alert("用户名已经被注册,请重新输入");
+									}
+									else
+									{
+										window.localStorage.setItem('token', response.data.register);
+										window.localStorage.setItem('name', this.username);
+										this.$router.push({
+												path: '/', 
+												name: 'SWPI',
+												params: { 
+														username: this.username
+												},
+										});
+									}
+							 })
+							 .catch(error => {
+									console.log(error);
+							 });
 						}
 					},
 			reset: function () {

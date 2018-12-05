@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { LOGIN_MUTATION } from '../js/graphql.js';
 	export default {
 		data() {
 			return {
@@ -33,17 +34,38 @@
 			getEventData:function() {
 				let routerParams = this.$route.params.username;
 				//console.log("routerParams"+routerParams); 
-				this.username = routerParams
+				this.username = routerParams;
 			},
 			submit: function () {
-						this.$router.push({
-								path: '/', 
-								name: 'SWPI',
-								params: { 
-										username: this.username
-								},
-						})
-					},
+				this.$apollo.mutate({
+					mutation: LOGIN_MUTATION,
+					variables: {
+							username: this.$data.username,
+							password: this.$data.password
+					}
+				})
+				.then(response => {
+						if(response.data.login == "Password incorrect." || response.data.login == "No such user.")
+						{
+							alert("用户名或密码错误");
+						}
+						else
+						{
+							window.localStorage.setItem('token', response.data.login);
+							window.localStorage.setItem('name', this.username);
+							this.$router.push({
+									path: '/', 
+									name: 'SWPI',
+									params: { 
+											username: this.username
+									},
+							});
+						}
+				})
+				.catch(error => {
+						console.log(error);
+				});
+			},
 			reset: function () {
 				this.$data.username = "";
 				this.$data.password = "";
