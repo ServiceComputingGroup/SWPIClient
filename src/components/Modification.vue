@@ -65,6 +65,7 @@
 									if(response.data.modifyuser)
 									{
 										alert("修改信息成功");
+										this.$router.go(0);
 										this.$router.push({
 												path: '/', 
 												name: 'SWPI',
