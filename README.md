@@ -1,21 +1,21 @@
-# swpi
+# SWAPI
 
-> A Vue.js project
+> 本项目是基于 VUE.js 的手脚架 vue-cli 项目，前端模仿 [SWAPI](https://swapi.co/) 网站界面，增加了用户注册，用户登录，登出，修改用户信息的功能
 
-## Build Setup
+## 项目安装
 
 ``` bash
 # install dependencies
-npm install
+npm install (npm的安装速度较慢)
 
 # serve with hot reload at localhost:8080
 npm run dev
 
-# build for production with minification
-npm run build
+# 使用国内镜像cnpm
+npm install -g cnpm --registry=https://registry.npm.taobao.org
 
-# build for production and view the bundle analyzer report
-npm run build --report
-```
+# 安装依赖
+cnpm install
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+# 启动服务可以访问localhost:8080
+cnpm run dev 

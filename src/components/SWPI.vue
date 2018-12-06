@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="navbar-header">
                 <div class="navbar-brand" href="#">
-                    <a href="javascript:void(0);">No Have Tweet</a>
+                    <a href="https://github.com/ServiceComputingGroup">Github</a>
                 </div>
             </div>
             <div class="collapse navbar-collapse">
@@ -211,9 +211,6 @@
 				})
 				.then(response => {
 					var str = response.data.query;
-					str = str.replace(/\\n/g,"\n\t");
-					str = str.replace(/\\\"/g,"\"");
-					//str = str.replace("\\\"", "\"");
 					this.$data.text = str;
 				})
 				.catch(error => {
