@@ -55,9 +55,7 @@
 
                 <p class="lead pad_top">Result:</p>
                 <div class="well">
-                      <pre id="interactive_output" class="pre-scrollable">
-{{text}}
-                      </pre>
+                      <pre id="interactive_output" class="pre-scrollable">{{text}}</pre>
                 </div>
             </div>
             <div class="col-sm-2 col-lg-2 col-md-2">
@@ -179,16 +177,17 @@
 				var tempstr = this.url;
 				var strs = tempstr.split("/");
 				console.log(strs);
-				var lpage = "";
-				var ltype = "";
-				var lindex = "";
+				var lpage = null;
+				var ltype = null;
+				var lindex = null;
 				if(strs.length>=2){
 					ltype = strs[0];
 					if(strs[1].indexOf("?page") != -1){
 						var t = strs[1].split("=");
 						lpage = t[1];
 					}else{
-						lindex = strs[1];
+						if(strs[1] != "")
+							lindex = strs[1];
 					}
 				}else if(strs.length == 1){
 					ltype = strs[0];
