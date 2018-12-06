@@ -6,16 +6,16 @@
 
 ``` bash
 # install dependencies
-npm install (npm的安装速度较慢)
+npm install (npm的安装速度较慢，建议使用cnpm)
 
 # serve with hot reload at localhost:8080
 npm run dev
 
-# 使用国内镜像cnpm
+# 使用国内镜像 cnpm
 npm install -g cnpm --registry=https://registry.npm.taobao.org
 
 # 安装依赖
 cnpm install
 
-# 启动服务可以访问localhost:8080
+# 启动服务可以访问 localhost:8080
 cnpm run dev 
