@@ -23,6 +23,7 @@
 	
 	import { JUDGESTATE_QUERY } from '../js/graphql.js';
 	import { MODIFYUSER_MUTATION } from '../js/graphql.js';
+	import { QUERYUSER_QUERY } from '../js/graphql.js';
 	export default {
 		data() {
 			return {
@@ -115,6 +116,23 @@
 						else
 						{
 							this.username = window.localStorage.getItem('name');
+							this.$apollo.query({
+								query: QUERYUSER_QUERY,
+								variables: {
+										username: this.username
+								}
+							})
+							.then(res => {
+								var str = res.data.queryuser;
+								//console.log(str);
+								var strs = str.split(",");
+								this.password = strs[0];
+								this.phone = strs[1];
+								this.email = strs[2];
+							})
+							.catch(error => {
+								console.log(error);
+							})
 						}
 					})
 					.catch(error => {

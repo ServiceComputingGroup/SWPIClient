@@ -195,6 +195,11 @@
 				console.log("type :"+ltype);
 				console.log("page :"+lpage);
 				console.log("index :"+lindex);
+				if(ltype == ""){
+					var json = require('../data.json');
+					this.$data.text = json;
+					return;
+				}
 				this.$apollo.query({
 					query: QUERY_QUERY,
 					variables: {
@@ -205,7 +210,11 @@
 					}
 				})
 				.then(response => {
-					this.$data.text = response.data.query;
+					var str = response.data.query;
+					str = str.replace(/\\n/g,"\n\t");
+					str = str.replace(/\\\"/g,"\"");
+					//str = str.replace("\\\"", "\"");
+					this.$data.text = str;
 				})
 				.catch(error => {
 						console.log(error);

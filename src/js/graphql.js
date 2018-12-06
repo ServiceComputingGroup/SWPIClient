@@ -42,7 +42,13 @@ export const JUDGESTATE_QUERY = gql `
         ) 
     }
 `
-
+export const QUERYUSER_QUERY = gql `
+    query queryuser($username: String!) {
+        queryuser(
+            username: $username
+        ) 
+    }
+`
 export const QUERY_QUERY = gql `
     query query($index: String,$token: String!,$type: String!,$page: String) {
         query(

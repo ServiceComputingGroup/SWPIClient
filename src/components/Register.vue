@@ -71,7 +71,7 @@
 								 }
 							 })
 							 .then(response => {
-									console.log(response.data.register);
+									//console.log(response.data.register);
 									if(response.data.register == "")
 									{
 										alert("用户名已经被注册,请重新输入");
