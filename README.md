@@ -1,6 +1,6 @@
 # SWAPI
 
-[![Build Status](https://www.travis-ci.org/ServiceComputingGroup/SWPIClient.svg?branch=master)](https://www.travis-ci.org/ServiceComputingGroup/SWPIClient)
+[![Build Status](https://www.travis-ci.org/ServiceComputingGroup/SWPIClient.svg?branch=master)](https://www.travis-ci.org/ServiceComputingGroup/SWPIClient)  ![](https://img.shields.io/badge/license-MIT-000000.svg) [![codebeat badge](https://codebeat.co/badges/5ff2ea16-87a5-4667-8c84-e3e1b260330e)](https://codebeat.co/projects/github-com-servicecomputinggroup-swpiclient-master)
 
 > 本项目是基于 VUE.js 的手脚架 vue-cli 项目，前端模仿 [SWAPI](https://swapi.co/) 网站界面，增加了用户注册，用户登录，登出，修改用户信息的功能
 
