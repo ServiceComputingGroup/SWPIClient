@@ -21,3 +21,14 @@ cnpm install
 
 # 启动服务可以访问 localhost:8080
 cnpm run dev 
+```
+## 容器使用
+``` bash
+# 构建镜像
+docker build -t client .
+# 启动容器
+docker run -p 80:80 client
+
+# 最后访问IP地址80端口
+```
+
