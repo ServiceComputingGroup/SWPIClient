@@ -24,6 +24,9 @@ cnpm run dev
 ```
 ## 容器使用
 ``` bash
+# build
+npm run build
+或者 cnpm run build
 # 构建镜像
 docker build -t client .
 # 启动容器
