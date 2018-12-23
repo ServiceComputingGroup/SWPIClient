@@ -10,7 +10,7 @@ import VueApollo from 'vue-apollo'
 
 const httpLink = new HttpLink({
   // You should use an absolute URL here
-  uri: 'http://localhost:9091/graphql',
+  uri: 'http://192.168.100.2:9091/graphql',
 })
 
 // Create the apollo client
